@@ -83,16 +83,16 @@ class BuiltInThemesTest {
     fun modernDeclaresItsUserParameters() {
         val doc = BuiltInThemes.loadModern("build/tmp/builtin-cache").doc
         assertEquals(setOf("accent", "radius", "density"), doc.parameters.keys)
-        assertEquals("zinc", (doc.parameters.getValue("accent").default as kotlinx.serialization.json.JsonPrimitive).content)
-        assertEquals(6, doc.parameters.getValue("radius").default?.let { (it as kotlinx.serialization.json.JsonPrimitive).content.toInt() })
+        assertEquals("rose", (doc.parameters.getValue("accent").default as kotlinx.serialization.json.JsonPrimitive).content)
+        assertEquals(22, doc.parameters.getValue("radius").default?.let { (it as kotlinx.serialization.json.JsonPrimitive).content.toInt() })
         // Every accent choice carries a swatch for the UI.
         assertEquals(doc.parameters.getValue("accent").options.toSet(), doc.parameters.getValue("accent").optionColors.keys)
     }
 
     @Test
     fun accentParameterRecoloursThePrimaryAction() {
-        assertEquals(androidx.compose.ui.graphics.Color(0xFF18181B), modern(emptyMap()).colors.accent)
-        assertEquals(androidx.compose.ui.graphics.Color(0xFFFAFAFA), modern(emptyMap(), dark = true).colors.accent)
+        assertEquals(androidx.compose.ui.graphics.Color(0xFFFA243C), modern(emptyMap()).colors.accent)
+        assertEquals(androidx.compose.ui.graphics.Color(0xFFFF375F), modern(emptyMap(), dark = true).colors.accent)
         assertEquals(androidx.compose.ui.graphics.Color(0xFF2563EB), modern(mapOf("accent" to "blue")).colors.accent)
         assertEquals(androidx.compose.ui.graphics.Color(0xFF3B82F6), modern(mapOf("accent" to "blue"), dark = true).colors.accent)
         assertEquals(androidx.compose.ui.graphics.Color.White, modern(mapOf("accent" to "blue")).colors.onAccent)
@@ -100,12 +100,12 @@ class BuiltInThemesTest {
 
     @Test
     fun radiusParameterDrivesEveryShape() {
-        assertEquals(androidx.compose.foundation.shape.RoundedCornerShape(6.dp), modern(emptyMap()).shapes.medium)
+        assertEquals(androidx.compose.foundation.shape.RoundedCornerShape(22.dp), modern(emptyMap()).shapes.medium)
         assertEquals(androidx.compose.foundation.shape.RoundedCornerShape(12.dp), modern(mapOf("radius" to "12")).shapes.medium)
         assertEquals(androidx.compose.foundation.shape.RoundedCornerShape(18.dp), modern(mapOf("radius" to "12")).components.cardTheme.states.default.shape)
         // Never negative: small = max(0, radius - 2).
         assertEquals(androidx.compose.foundation.shape.RoundedCornerShape(0.dp), modern(mapOf("radius" to "0")).shapes.small)
-        assertEquals(androidx.compose.foundation.shape.RoundedCornerShape(16.dp), modern(mapOf("radius" to "99")).shapes.medium) // clamped to max
+        assertEquals(androidx.compose.foundation.shape.RoundedCornerShape(32.dp), modern(mapOf("radius" to "99")).shapes.medium) // clamped to max
     }
 
     @Test

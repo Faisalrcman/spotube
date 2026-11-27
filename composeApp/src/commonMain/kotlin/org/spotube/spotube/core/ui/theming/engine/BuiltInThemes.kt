@@ -412,7 +412,7 @@ internal const val MODERN_JSON = """{
       "scrim": "#00000099"
     },
     "shape": {
-      "small": 10,
+      "small": "{vars.rSm}",
       "medium": "{vars.r}",
       "large": "{vars.rXl}"
     },

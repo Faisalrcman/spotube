@@ -57,14 +57,14 @@ class ThemeRuntimeTest {
 
     @Test
     fun selectingATheme_compilesOnce_andUnrelatedSettingsDoNotRecompile() = runBlocking {
-        val settings = FakeSettings(UserSettings())
+        val settings = FakeSettings(UserSettings(selectedThemeId = null))
         val rt = runtime(settings)
         val stock = rt.precompiled.value
         assertEquals(null, stock.loaded)
 
         settings.userSettings.value = settings.userSettings.value.copy(selectedThemeId = BuiltInThemes.MODERN_ID)
         val modern = withTimeout(10_000) { rt.precompiled.first { it.loaded != null } }
-        assertEquals("Modern", modern.loaded?.name)
+        assertEquals("Apple Music", modern.loaded?.name)
 
         // Changing something the theme doesn't depend on must not produce a new compiled theme.
         settings.userSettings.value = settings.userSettings.value.copy(jamParticipantName = "x")
