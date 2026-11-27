@@ -23,6 +23,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.spotube.millennium.theme.MillenniumPalette
 import org.spotube.spotube.core.paths.Paths
+import org.spotube.spotube.core.ui.theming.engine.BuiltInThemes
 
 @Serializable
 enum class Theme {
@@ -52,7 +53,7 @@ data class UserSettings(
      * Selected theme: `builtin:millennium` (the plain Millennium look, whose accent is [palette]), `builtin:modern`, or the
      * id of an installed theme package. Null and the older `builtin:blue/orange/lime` values mean Millennium.
      */
-    val selectedThemeId: String? = null,
+    val selectedThemeId: String? = BuiltInThemes.MODERN_ID,
     /** The user's values for each theme's parameters, keyed `"<themeId>.<parameter>"`; absent means the theme's default. */
     val themeParameters: Map<String, String> = emptyMap(),
 
