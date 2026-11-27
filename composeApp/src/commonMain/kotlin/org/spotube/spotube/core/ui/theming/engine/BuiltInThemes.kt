@@ -25,7 +25,7 @@ object BuiltInThemes {
     /** The plain Millennium look; its accent (Blue/Orange/Lime) is `UserSettings.palette`. Older `builtin:<palette>` ids mean this too. */
     const val MILLENNIUM_ID = "builtin:millennium"
 
-    /** Settings value of `UserSettings.selectedThemeId` for the Modern theme. */
+    /** Settings value of `UserSettings.selectedThemeId` for the bundled Apple Music inspired theme. */
     const val MODERN_ID = "builtin:modern"
 
     /** Whether [id] names a theme provided by this object. */
@@ -33,12 +33,13 @@ object BuiltInThemes {
 
     private val modern: ThemePackage by lazy { ThemePackage(MODERN_JSON, emptyMap()) }
 
-    /** Parses the Modern theme; the id inside its JSON is internal, the selectable id is [MODERN_ID]. */
+    /** Parses the Apple Music theme; the id inside its JSON is internal, the selectable id is [MODERN_ID]. */
     fun loadModern(cacheDir: String): LoadedTheme {
-        val base = requireNotNull(loadTheme(modern, cacheDir, LinkedHashSet())) { "built-in Modern theme is invalid" }
-        // Modern swaps the Iconsax set for Lucide. Vectors can't be expressed in JSON (a package can't ship
-        // code), so only built-in themes carry them; MillenniumIcon applies them to every icon it draws.
-        val icons = lucideIconReplacements.mapValues { ThemeIcon.Vector(it.value) }
+        val base = requireNotNull(loadTheme(modern, cacheDir, LinkedHashSet())) { "built-in Apple Music theme is invalid" }
+        // Rounded Lucide glyphs for the whole app, with a few filled playback/tab icons layered on top.
+        // Vectors can't be expressed in JSON (a package can't ship code), so only built-in themes carry them;
+        // MillenniumIcon applies them to every icon it draws.
+        val icons = (lucideIconReplacements + appleMusicFilledIcons).mapValues { ThemeIcon.Vector(it.value) }
         return LoadedTheme(
             doc = base.doc, assets = ThemeAssets(icons = icons), problems = base.problems,
             usesItemContext = base.usesItemContext, usesLiveContext = base.usesLiveContext, fontFileCount = 0, iconCount = 0, packageBytes = base.packageBytes,
@@ -47,8 +48,9 @@ object BuiltInThemes {
 }
 
 /**
- * "Modern": a neutral, flat look in the spirit of shadcn/ui's zinc palette. Solid surfaces, 1px hairline
- * borders, small radii, no gloss, no hover scaling; the primary action is the foreground colour. Icons are Lucide.
+ * "Apple Music": near-black glass surfaces, a vivid red accent, large radii and a heavier system-font
+ * hierarchy. Same engine document format as any authored theme; only the tokens differ. Icons are rounded
+ * Lucide with a few filled SF-Symbols-like glyphs for playback and navigation.
  */
 internal const val MODERN_JSON = """{
   "schema": "1.4.0",
