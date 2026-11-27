@@ -200,9 +200,10 @@ object AppSlots {
         component = "floatingPlayer", variant = "root",
         defaults = { b, _ ->
             FloatingPlayerRootProps(
-                background = b.panel,
-                shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
-                borderColor = b.colors.border,
+                // Translucent, glass-like surfaces with a hairline highlight instead of a solid panel.
+                background = SolidColor(b.colors.surface.copy(alpha = 0.42f)),
+                shape = RoundedCornerShape(topStart = 22.dp, topEnd = 22.dp),
+                borderColor = b.colors.border.copy(alpha = 0.55f),
                 borderWidth = 1.dp,
                 shadowElevation = 0.dp,
                 contentPadding = PaddingValues(horizontal = 12.dp),

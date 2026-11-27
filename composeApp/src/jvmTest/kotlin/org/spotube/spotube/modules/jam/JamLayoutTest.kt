@@ -22,6 +22,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.use
+import dev.chrisbanes.haze.rememberHazeState
 import org.spotube.spotube.core.ui.theming.SpotubeTheme
 import org.spotube.spotube.core.navigation.Navigator
 import org.spotube.spotube.core.navigation.Routes
@@ -121,6 +122,7 @@ class JamLayoutTest {
                                     navigator = navigator,
                                     navigationState = navigation,
                                     viewModel = remember { AppShellViewModel() },
+                                    hazeState = rememberHazeState(),
                                     onQueue = {}, onAlternativeSource = {}, onExpandLyrics = {},
                                     floatingPlayer = { modifier ->
                                         FloatingPlayerContent(

@@ -17,6 +17,7 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.PointerType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.use
+import dev.chrisbanes.haze.rememberHazeState
 import org.spotube.spotube.core.navigation.Navigator
 import org.spotube.spotube.core.navigation.Routes
 import org.spotube.spotube.core.navigation.TOP_LEVEL_ROUTES
@@ -45,6 +46,7 @@ class CompactPlayerOverlayDragTest {
                     navigator = navigator,
                     navigationState = navigation,
                     viewModel = remember { AppShellViewModel() },
+                    hazeState = rememberHazeState(),
                     onQueue = {}, onAlternativeSource = {}, onExpandLyrics = {},
                     floatingPlayer = { modifier ->
                         DisposableEffect(Unit) {

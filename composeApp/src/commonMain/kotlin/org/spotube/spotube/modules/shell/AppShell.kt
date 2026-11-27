@@ -73,6 +73,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
@@ -84,6 +85,10 @@ import com.composeunstyled.Sheet
 import com.composeunstyled.SheetDetent
 import com.composeunstyled.UnstyledBottomSheet
 import com.composeunstyled.rememberBottomSheetState
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.blur.HazeColorEffect
+import dev.chrisbanes.haze.blur.blurEffect
+import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import org.spotube.spotube.core.navigation.NavigationCommands
@@ -298,16 +303,21 @@ fun AppShell(
                     }
                 }
             } else {
+                // Apple-Music style glass: the compact (phone) shell blurs whatever is behind
+                // the floating player and the bottom bar instead of drawing a solid surface.
+                val compactHazeState = rememberHazeState()
                 Box(modifier = Modifier.fillMaxSize()) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
                             .appBackground()
+                            .hazeSource(state = compactHazeState)
                     )
                     CompactPlayerOverlay(
                         navigator = navigator,
                         navigationState = navigationState,
                         viewModel = viewModel,
+                        hazeState = compactHazeState,
                         onQueue = queueViewModel::toggleQueueVisibility,
                         onAlternativeSource = alternativeViewModel::toggleAlternativeVisibility,
                         onExpandLyrics = viewModel::showLyricsOverlay,
@@ -379,6 +389,7 @@ internal fun CompactPlayerOverlay(
     navigator: Navigator,
     navigationState: NavigationState,
     viewModel: AppShellViewModel,
+    hazeState: HazeState,
     onQueue: () -> Unit,
     onAlternativeSource: () -> Unit,
     onExpandLyrics: () -> Unit,
@@ -453,7 +464,9 @@ internal fun CompactPlayerOverlay(
     if (expandedPlayerVisible) expandedPlayerComposed = true
 
     Box(modifier = Modifier.fillMaxSize()) {
-        content()
+        Box(modifier = Modifier.fillMaxSize().hazeSource(state = hazeState)) {
+            content()
+        }
 
         UnstyledBottomSheet(
             state = sheetState,
@@ -478,6 +491,14 @@ internal fun CompactPlayerOverlay(
                         floatingPlayer(
                             Modifier
                                 .zeroSizeUnless(floatingPlayerVisible)
+                                .hazeEffect(state = hazeState) {
+                                    blurEffect {
+                                        blurRadius = 24.dp
+                                        colorEffects = listOf(
+                                            HazeColorEffect.tint(Color.White.copy(alpha = 0.10f))
+                                        )
+                                    }
+                                }
                                 .graphicsLayer {
                                     alpha = viewModel.floatingPlayerAlpha(progress)
                                 })
@@ -491,6 +512,14 @@ internal fun CompactPlayerOverlay(
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
                 .zeroSizeUnless(floatingPlayerVisible)
+                .hazeEffect(state = hazeState) {
+                    blurEffect {
+                        blurRadius = 18.dp
+                        colorEffects = listOf(
+                            HazeColorEffect.tint(Color.White.copy(alpha = 0.08f))
+                        )
+                    }
+                }
                 .onSizeChanged { size ->
                     viewModel.onBottomBarMeasured(with(density) { size.height.toDp() })
                 }
